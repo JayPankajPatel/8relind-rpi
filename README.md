@@ -1,40 +1,82 @@
-[![relay8-rpi](readmeres/sequent.jpg)](https://www.sequentmicrosystems.com)
+# lib8relind
 
-# 8relind-rpi
+This is the python library to control the [8-RELAYS Stackable Card for Raspberry Pi](https://sequentmicrosystems.com/product/raspberry-pi-relays-stackable-card/).
 
-[![relay8-rpi](readmeres/8-RELIND.jpg)](https://www.sequentmicrosystems.com)
-
-This is the command line and python functions to control the [8-RELAYS Stackable Card for Raspberry Pi](https://sequentmicrosystems.com/collections/industrial-automation/products/8-relays-stackable-card-for-raspberry-pi) Ver. 4.If you use Ver 3.x download from [here](https://github.com/SequentMicrosystems/8relay-rpi). If you have Ver. 1-2 with screw-type connectors download from [here](https://github.com/SequentMicrosystems/relay8-rpi).
-
-Don't forget to enable I2C communication:
-```bash
-~$ sudo raspi-config
-```
-
-## Usage
+## Install
 
 ```bash
+~$ sudo apt-get update
+~$ sudo apt-get install build-essential python-pip python-dev python-smbus git
 ~$ git clone https://github.com/SequentMicrosystems/8relind-rpi.git
+~$ cd 8relind-rpi/python/8relind/
+~/8relind-rpi/python/8relind$ sudo python setup.py install
+```
+For python3.x:
+```bash
+~$ sudo apt-get update
+~$ sudo apt-get install build-essential python3-pip python3-dev python3-smbus git
+~$ git clone https://github.com/SequentMicrosystems/8relind-rpi.git
+~$ cd 8relind-rpi/python/8relind/
+~/8relind-rpi/python/8relind$ sudo python3 setup.py install
+```
+## Update
+
+```bash
 ~$ cd 8relind-rpi/
-~/8relind-rpi$ sudo make install
-```
-
-Now you can access all the functions of the relays board through the command "8relind". Use -h option for help:
-```bash
-~$ 8relind -h
-```
-
-If you clone the repository any update can be made with the following commands:
-
-```bash
-~$ cd 8relind-rpi/  
 ~/8relind-rpi$ git pull
-~/8relind-rpi$ sudo make install
-```  
+~$ cd 8relind-rpi/python/8relind/
+~/8relind-rpi/python/8relind$ sudo python setup.py install
+```
+For python3.x the last line must be replaced with:
+```bash
+~/8relind-rpi/python/8relind$ sudo python3 setup.py install
+```
+## Usage 
 
-### [Python library](https://github.com/SequentMicrosystems/8relind-rpi/tree/master/python)
+Now you can import the lib8relind library and use its functions. To test, read relays status from the board with stack level 0:
 
-### [Node-Red example based on "exec" node](https://github.com/SequentMicrosystems/8relind-rpi/tree/master/node-red)
+```bash
+~$ python
+Python 2.7.9 (default, Sep 17 2016, 20:26:04)
+[GCC 4.9.2] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import lib8relind
+>>> lib8relind.get_all(0)
+0
+>>>
+```
 
-### [Node-Red "8relind" node](https://github.com/SequentMicrosystems/8relind-rpi/tree/master/node-red-contrib-sm-8relind)
+## Functions
 
+### set(stack, relay, value)
+Set one relay state.
+
+stack - stack level of the 8-Relay card (selectable from address jumpers [0..7])
+
+relay - relay number (id) [1..8]
+
+value - relay state 1: turn ON, 0: turn OFF[0..1]
+
+
+### set_all(stack, value)
+Set all relays state.
+
+stack - stack level of the 8-Relay card (selectable from address jumpers [0..7])
+
+value - 8 bit value of all relays (ex: 255: turn on all relays, 0: turn off all relays, 1:turn on relay #1 and off the rest)
+
+### get(stack, relay)
+Get one relay state.
+
+stack - stack level of the 8-Relay card (selectable from address jumpers [0..7])
+
+relay - relay number (id) [1..8]
+
+return 0 == relay off; 1 - relay on
+
+### get_all(stack)
+Return the state of all relays.
+
+stack - stack level of the 8-Relay card (selectable from address jumpers [0..7])
+
+return - [0..255]
